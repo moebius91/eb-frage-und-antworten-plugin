@@ -15,7 +15,7 @@ function eb_register_faq_post_type() {
         'public' => true,
         'has_archive' => false,
         'show_ui' => true,
-        'label'  => 'FAQ',
+        'label'  => 'Frage/Antworten',
         'supports' => array('title', 'editor'),
         'menu_icon' => 'dashicons-editor-help',
 		'show_in_rest' => true,
@@ -139,7 +139,7 @@ function eb_faq_block_render_callback($attributes) {
 function eb_add_faq_metabox() {
     add_meta_box(
         'eb_faq_visibility', // ID der Meta-Box
-        'FAQ Sichtbarkeit', // Titel der Meta-Box
+        'F/A Sichtbarkeit', // Titel der Meta-Box
         'eb_faq_visibility_callback', // Callback-Funktion
         'eb_faq', // Beitragstyp
         'side', // Position (z.B. 'normal', 'side')
