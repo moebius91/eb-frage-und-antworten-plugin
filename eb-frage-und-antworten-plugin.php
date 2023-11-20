@@ -110,7 +110,6 @@ function eb_register_gutenberg_faq_block() {
 }
 add_action('init', 'eb_register_gutenberg_faq_block');
 
-// Optional: Serverseitiges Rendering des Blocks
 function eb_faq_block_render_callback($attributes) {
     if(empty($attributes['selectedPost'])) {
         return ''; // Kein Beitrag ausgewählt
@@ -179,8 +178,6 @@ function eb_redirect_faq_pages() {
         $is_visible = get_post_meta($post->ID, '_eb_faq_visible', true);
         
         if ($is_visible != '1') {
-            // UMLEITUNG ZU EINER ANDEREN SEITE ODER ANZEIGEN EINER 404-SEITE
-            // Zum Beispiel: zur Startseite umleiten
             wp_redirect(home_url());
             exit;
         }
