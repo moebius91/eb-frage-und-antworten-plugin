@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EB Frage und Antworten Plugin (Jan-Nikolas Othersen)
  * Description: Ein einfaches "Frage und Antworten"-Plugin für WordPress.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Jan-Nikolas Othersen
  */
 
@@ -66,15 +66,15 @@ function eb_faq_styles() {
             padding: 10px;
             background-color: #d9d9d9;
             cursor: pointer;
-            border: 1px solid #dcdcdc;
+            border: 1px solid #d9d9d9;
         }
 
         .eb-faq-answer {
             display: none;
             padding: 10px;
-            border-left: 1px solid #dcdcdc;
-            border-right: 1px solid #dcdcdc;
-            border-bottom: 1px solid #dcdcdc;
+            border-left: 1px solid #d9d9d9;
+            border-right: 1px solid #d9d9d9;
+            border-bottom: 1px solid #d9d9d9;
         }
 
         .eb-faq-toggle {
