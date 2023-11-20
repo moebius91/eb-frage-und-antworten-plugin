@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EB Frage und Antworten Plugin (Jan-Nikolas Othersen)
  * Description: Ein einfaches "Frage und Antworten"-Plugin für WordPress.
- * Version: 1.1.4
+ * Version: 1.2.1
  * Author: Jan-Nikolas Othersen
  */
 
@@ -12,7 +12,8 @@ if (!defined('ABSPATH')) {
 
 function eb_register_faq_post_type() {
     $args = array(
-        'public' => false,
+        'public' => true,
+        'has_archive' => false,
         'show_ui' => true,
         'label'  => 'FAQ',
         'supports' => array('title', 'editor'),
@@ -136,3 +137,53 @@ function eb_faq_block_render_callback($attributes) {
     return $output;
 }
 
+function eb_add_faq_metabox() {
+    add_meta_box(
+        'eb_faq_visibility', // ID der Meta-Box
+        'FAQ Sichtbarkeit', // Titel der Meta-Box
+        'eb_faq_visibility_callback', // Callback-Funktion
+        'eb_faq', // Beitragstyp
+        'side', // Position (z.B. 'normal', 'side')
+        'high' // Priorität
+    );
+}
+add_action('add_meta_boxes', 'eb_add_faq_metabox');
+
+function eb_faq_visibility_callback($post) {
+    // Standardmäßig auf sichtbar setzen, wenn kein Wert vorhanden ist
+    $value = get_post_meta($post->ID, '_eb_faq_visible', true);
+    if ($value === '') {
+        $value = '1';
+    }
+
+    ?>
+    <label for="eb_faq_visible">
+        <input type="checkbox" name="eb_faq_visible" id="eb_faq_visible" value="1" <?php checked($value, '1'); ?>>
+        Im Frontend anzeigen
+    </label>
+    <?php
+}
+
+function eb_save_faq_visibility($post_id) {
+    if (array_key_exists('eb_faq_visible', $_POST)) {
+        update_post_meta($post_id, '_eb_faq_visible', '1');
+    } else {
+        update_post_meta($post_id, '_eb_faq_visible', '0');
+    }
+}
+add_action('save_post', 'eb_save_faq_visibility');
+
+function eb_redirect_faq_pages() {
+    if (is_singular('eb_faq')) {
+        global $post;
+        $is_visible = get_post_meta($post->ID, '_eb_faq_visible', true);
+        
+        if ($is_visible != '1') {
+            // UMLEITUNG ZU EINER ANDEREN SEITE ODER ANZEIGEN EINER 404-SEITE
+            // Zum Beispiel: zur Startseite umleiten
+            wp_redirect(home_url());
+            exit;
+        }
+    }
+}
+add_action('template_redirect', 'eb_redirect_faq_pages');
