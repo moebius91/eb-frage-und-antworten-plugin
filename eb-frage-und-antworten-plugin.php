@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EB Frage und Antworten Plugin (Jan-Nikolas Othersen)
  * Description: Ein einfaches "Frage und Antworten"-Plugin für WordPress.
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Jan-Nikolas Othersen
  */
 
@@ -88,3 +88,28 @@ function eb_faq_styles() {
     <?php }
 }
 add_action('wp_head', 'eb_faq_styles');
+
+function eb_register_gutenberg_faq_block() {
+    // Pfad zum JS-Skript innerhalb des Plugin-Verzeichnisses
+    $script_path = plugin_dir_url(__FILE__) . 'js/eb-faq-block-editor.js';
+
+    // Registriere das Block-Editor-Skript
+    wp_register_script(
+        'eb-faq-block-editor',
+        $script_path,
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data'), // Abhängigkeiten
+        filemtime(plugin_dir_path(__FILE__) . 'js/eb-faq-block-editor.js')
+    );
+
+    // Registriere den Block
+    register_block_type('eb/faq-block', array(
+        'editor_script' => 'eb-faq-block-editor',
+        'render_callback' => 'eb_faq_block_render_callback' // Optional: für serverseitiges Rendering
+    ));
+}
+add_action('init', 'eb_register_gutenberg_faq_block');
+
+// Optional: Serverseitiges Rendering des Blocks
+function eb_faq_block_render_callback($attributes) {
+    // Implementieren Sie hier die Logik zum Rendern des Blocks
+}
