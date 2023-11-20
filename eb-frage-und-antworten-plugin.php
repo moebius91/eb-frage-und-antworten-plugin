@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EB Frage und Antworten Plugin (Jan-Nikolas Othersen)
  * Description: Ein einfaches "Frage und Antworten"-Plugin für WordPress.
- * Version: 1.1.0
+ * Version: 1.1.3
  * Author: Jan-Nikolas Othersen
  */
 
@@ -111,5 +111,28 @@ add_action('init', 'eb_register_gutenberg_faq_block');
 
 // Optional: Serverseitiges Rendering des Blocks
 function eb_faq_block_render_callback($attributes) {
-    // Implementieren Sie hier die Logik zum Rendern des Blocks
+    if(empty($attributes['selectedPost'])) {
+        return ''; // Kein Beitrag ausgewählt
+    }
+
+    $post_id = intval($attributes['selectedPost']);
+    $faq_post = get_post($post_id);
+
+    if(!$faq_post || $faq_post->post_type !== 'eb_faq') {
+        return ''; // Ungültiger Beitrag oder falscher Beitragstyp
+    }
+
+    // Verwenden Sie eine eindeutige ID für die Checkbox und das Label
+    $unique_id = 'eb-faq-' . $post_id . '-' . wp_generate_uuid4();
+
+    // Generieren des HTML-Codes für die Anzeige des Beitrags
+    $content = apply_filters('the_content', $faq_post->post_content);
+    $output = "<div class='eb-faq-item'>";
+    $output .= "<input type='checkbox' id='{$unique_id}' class='eb-faq-toggle'>";
+    $output .= "<label for='{$unique_id}' class='eb-faq-question'>{$faq_post->post_title}</label>";
+    $output .= "<div class='eb-faq-answer'>{$content}</div>";
+    $output .= "</div>";
+
+    return $output;
 }
+
