@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: EB Frage und Antworten Plugin (Jan-Nikolas Othersen)
- * Description: Ein einfaches FAQ-Plugin für WordPress.
- * Version: 1.0.0
+ * Description: Ein einfaches "Frage und Antworten"-Plugin für WordPress.
+ * Version: 1.0.1
  * Author: Jan-Nikolas Othersen
  */
 
@@ -17,6 +17,7 @@ function eb_register_faq_post_type() {
         'label'  => 'FAQ',
         'supports' => array('title', 'editor'),
         'menu_icon' => 'dashicons-editor-help',
+		'show_in_rest' => true,
     );
     register_post_type('eb_faq', $args);
 }
@@ -36,9 +37,13 @@ function eb_faq_shortcode($atts) {
     if(!$faq_post || $faq_post->post_type !== 'eb_faq') return '';
 
     $content = apply_filters('the_content', $faq_post->post_content);
+
+    // Generieren einer eindeutigen ID für die Checkbox und das Label
+    $unique_id = 'eb-faq-' . $post_id . '-' . wp_generate_uuid4();
+
     $output = "<div class='eb-faq-item'>";
-    $output .= "<input type='checkbox' id='eb-faq-{$post_id}' class='eb-faq-toggle'>";
-    $output .= "<label for='eb-faq-{$post_id}' class='eb-faq-question'>{$faq_post->post_title}</label>";
+    $output .= "<input type='checkbox' id='{$unique_id}' class='eb-faq-toggle'>";
+    $output .= "<label for='{$unique_id}' class='eb-faq-question'>{$faq_post->post_title}</label>";
     $output .= "<div class='eb-faq-answer'>{$content}</div>";
     $output .= "</div>";
     
@@ -46,10 +51,10 @@ function eb_faq_shortcode($atts) {
 }
 add_shortcode('eb_faq', 'eb_faq_shortcode');
 
-function eb_faq_styles() {
-    global $eb_faq_used;
-    if (!$eb_faq_used) return;
 
+function eb_faq_styles() {
+    global $post;
+    if ( has_shortcode($post->post_content, 'eb_faq') ) {
     ?>
     <style>
         .eb-faq-item {
@@ -80,6 +85,6 @@ function eb_faq_styles() {
             display: block;
         }
     </style>
-    <?php
+    <?php }
 }
 add_action('wp_head', 'eb_faq_styles');
